@@ -2,7 +2,7 @@
   <search @on-success="searchClick"></search>
   <div class="content">
     <Row :gutter="24" v-if="prodList.value.length">
-      <Col span="4" v-for="item in prodList.value" :key="item.prod_id">
+      <Col span="6" v-for="item in prodList.value" :key="item.prod_id">
         <prodItem :item="item"></prodItem>
       </Col>
     </Row>

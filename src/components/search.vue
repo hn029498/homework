@@ -1,25 +1,30 @@
 <template>
   <div class="search">
     <Input v-model="inputValue" search enter-button clearable placeholder="请输入商品名称" @on-search="searchClick" @on-clear="searchClick"/>
-    <div v-if="searchHistory.length" style="margin-top: 10px">
+    <div v-if="searchHistory.value.length" style="margin-top: 10px">
       <span>搜索记录 </span>
-      <Tag class="icon" v-for="item in searchHistory" :key="item" @click="historySearch(item)">{{item}}</Tag>
+      <Tag class="icon" v-for="item in searchHistory.value" :key="item" @click="historySearch(item)">{{item}}</Tag>
       <Icon class="icon" size="20" type="ios-trash-outline" @click="deleteClick"/>
 <!--      <Button shape="circle" icon="ios-trash-outline"></Button>-->
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
-import {ref,getCurrentInstance} from "vue"
+<script lang="ts" setup = "{emit}">
+import {ref,reactive} from "vue"
+// declare function emit(event:string,value:string):void
 
-const _this = getCurrentInstance().appContext.config.globalProperties
 let emit = defineEmits(["alertSome"])
 let inputValue = ref('')
-let searchHistory:Array<string> = ref([])
+interface listType {
+  value: Array<string>
+}
+let searchHistory:listType= reactive({value: []})
+ 
+let searHistoryStr:string|undefined|null = localStorage.getItem('searHistory');
 
-if (localStorage.getItem('searHistory')) {
-  searchHistory.value = JSON.parse(localStorage.getItem('searHistory'))
+if (searHistoryStr) {
+  searchHistory.value = JSON.parse(searHistoryStr)
 }
 
 // watch(searchHistory,val => {
