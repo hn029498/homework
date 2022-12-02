@@ -27,5 +27,14 @@ export default defineConfig({
     //     }
     //   }
     // }
+  },
+  server: {
+    proxy: {
+      "/v1": {
+        target: "http://zypapi.test.zonstmall.com/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/v1/, "/v1")
+      }
+    }
   }
 })

@@ -1,8 +1,8 @@
 <template>
   <div class="search">
-    <Input v-model="inputValue" search enter-button placeholder="请输入商品名称" @on-search="searchClick"/>
-    <div v-if="searchHistory.length">
-      <p>搜索记录</p>
+    <Input v-model="inputValue" search enter-button clearable placeholder="请输入商品名称" @on-search="searchClick" @on-clear="searchClick"/>
+    <div v-if="searchHistory.length" style="margin-top: 10px">
+      <span>搜索记录 </span>
       <Tag class="icon" v-for="item in searchHistory" :key="item" @click="historySearch(item)">{{item}}</Tag>
       <Icon class="icon" size="20" type="ios-trash-outline" @click="deleteClick"/>
 <!--      <Button shape="circle" icon="ios-trash-outline"></Button>-->
@@ -11,7 +11,10 @@
 </template>
 
 <script lang="ts" setup>
-import {ref,watch} from "vue"
+import {ref,getCurrentInstance} from "vue"
+
+const _this = getCurrentInstance().appContext.config.globalProperties
+let emit = defineEmits(["alertSome"])
 let inputValue = ref('')
 let searchHistory:Array<string> = ref([])
 
@@ -24,16 +27,18 @@ if (localStorage.getItem('searHistory')) {
 // })
 function searchClick() {
   let val:string = inputValue.value
-  searchHistory.value.push(val)
+  if (val && !searchHistory.value.includes(val)) searchHistory.value.unshift(val)
   localStorage.setItem('searHistory',JSON.stringify(searchHistory.value))
+  emit("onSuccess",inputValue.value)
 
 }
 function deleteClick() {
   searchHistory.value = []
   localStorage.setItem('searHistory',JSON.stringify(searchHistory.value))
 }
-function historySearch(val) {
+function historySearch(val:string) {
   inputValue.value = val
+  emit("onSuccess",inputValue.value)
 }
 </script>
 
